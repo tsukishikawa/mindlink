@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<title>MindLink — Arquitetura Técnica Sprint 2</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@600;700;800&family=Inter:wght@400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:#080e18}
+body{
+  font-family:'Inter',sans-serif;
+  background:linear-gradient(145deg,#080e18 0%,#0c1525 50%,#080e18 100%);
+  min-height:100vh;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:40px 20px 60px;
+  color:#c8d8e8;
+}
+.page{width:900px}
+
+/* ── Header ── */
+.hd{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:40px;
+  padding-bottom:20px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.logo{display:flex;align-items:center;gap:14px}
+.logo-mark{
+  width:40px;height:40px;border-radius:10px;
+  background:linear-gradient(135deg,#0f6e56,#1D9E75);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 20px rgba(29,158,117,.3);
+}
+.logo-mark svg{width:22px;height:22px}
+.logo-text{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff}
+.logo-text span{color:#1D9E75}
+.logo-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#3d7a62;letter-spacing:.08em;margin-top:2px}
+.badge{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  background:rgba(29,158,117,.1);border:1px solid rgba(29,158,117,.2);
+  color:#5DCAA5;padding:6px 14px;border-radius:20px;letter-spacing:.06em;
+}
+
+/* ── Diagrama ── */
+.arch{display:flex;flex-direction:column;gap:0}
+
+/* Linha de layer */
+.row{display:flex;align-items:stretch;gap:0}
+
+/* Label lateral */
+.lbl{
+  width:80px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:flex-end;
+  padding-right:16px;
+}
+.lbl span{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px;font-weight:500;
+  color:#253040;
+  text-transform:uppercase;letter-spacing:.12em;
+  writing-mode:horizontal-tb;
+}
+
+/* Cards container */
+.cards{display:flex;gap:10px;flex:1;padding:12px 0}
+
+/* Card base */
+.card{
+  flex:1;border-radius:14px;
+  padding:16px 14px 13px;
+  display:flex;flex-direction:column;align-items:center;gap:9px;
+  border:1px solid rgba(255,255,255,.06);
+  background:rgba(255,255,255,.02);
+  position:relative;overflow:hidden;
+  transition:border-color .2s,background .2s,transform .15s;
+  cursor:default;
+}
+.card::after{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:2px;
+  border-radius:14px 14px 0 0;
+  opacity:0;transition:opacity .2s;
+}
+.card:hover{transform:translateY(-3px)}
+.card:hover::after{opacity:1}
+
+/* Ícone */
+.ico{
+  width:46px;height:46px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+
+/* Textos */
+.cn{font-size:12px;font-weight:500;color:#d0e4f0;text-align:center;line-height:1.3}
+.cs{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px;color:#304a5c;text-align:center;line-height:1.5;
+}
+
+/* ── Acento por layer ── */
+/* TEAL — Fontes */
+.ct{border-color:rgba(29,158,117,.22)}
+.ct::after{background:#1D9E75}
+.ct:hover{background:rgba(29,158,117,.05);border-color:rgba(29,158,117,.4)}
+/* PURPLE — Python */
+.cp{border-color:rgba(127,119,221,.22)}
+.cp::after{background:#7F77DD}
+.cp:hover{background:rgba(127,119,221,.05);border-color:rgba(127,119,221,.4)}
+/* BLUE — Oracle DB */
+.cb{border-color:rgba(55,138,221,.22)}
+.cb::after{background:#378ADD}
+.cb:hover{background:rgba(55,138,221,.05);border-color:rgba(55,138,221,.4)}
+/* RED/ORACLE — OAC + Select AI */
+.co{border-color:rgba(199,70,52,.22)}
+.co::after{background:#C74634}
+.co:hover{background:rgba(199,70,52,.05);border-color:rgba(199,70,52,.4)}
+/* GRAY — Entrega */
+.cg{border-color:rgba(100,120,140,.18)}
+.cg::after{background:#5a7a90}
+.cg:hover{background:rgba(100,120,140,.05);border-color:rgba(100,120,140,.35)}
+
+/* ── Setas ── */
+.arrows{
+  display:flex;padding-left:80px;
+}
+.aw{flex:1;display:flex;justify-content:center;align-items:center;height:30px}
+
+/* ── Footer ── */
+.ft{
+  margin-top:36px;padding-top:18px;
+  border-top:1px solid rgba(255,255,255,.05);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.ft-l{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#1a3028;letter-spacing:.04em}
+.legend{display:flex;gap:18px}
+.leg{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#253540}
+.dot{width:7px;height:7px;border-radius:50%}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<div class="hd">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="9" stroke="white" stroke-width="1.5" opacity=".4"/><circle cx="11" cy="11" r="5" stroke="white" stroke-width="1.5"/><circle cx="11" cy="5"  r="2" fill="#9FE1CB"/><circle cx="17" cy="14.5" r="2" fill="#9FE1CB"/><circle cx="5"  cy="14.5" r="2" fill="#9FE1CB"/><line x1="11" y1="7" x2="11" y2="9" stroke="white" stroke-width="1" opacity=".5"/><line x1="15.3" y1="13.2" x2="13.7" y2="12.3" stroke="white" stroke-width="1" opacity=".5"/><line x1="6.7" y1="13.2" x2="8.3" y2="12.3" stroke="white" stroke-width="1" opacity=".5"/></svg>
+    </div>
+    <div>
+      <div class="logo-text"><span>MIND</span>LINK</div>
+      <div class="logo-sub">Mental Insight · Data Connection</div>
+    </div>
+  </div>
+  <div class="badge">Arquitetura Técnica · Sprint 2 · Oracle Challenge FIAP 2026</div>
+</div>
+
+<div class="arch">
+
+<!-- ══════════════════════════════════════════
+     LAYER 1 — FONTES DE DADOS
+════════════════════════════════════════════ -->
+<div class="row">
+  <div class="lbl"><span>Fontes</span></div>
+  <div class="cards">
+
+    <!-- SIH-SUS -->
+    <div class="card ct">
+      <div class="ico" style="background:rgba(29,158,117,.12)">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect x="4" y="2" width="20" height="24" rx="3" stroke="#1D9E75" stroke-width="1.2" fill="rgba(29,158,117,.08)"/>
+          <rect x="8" y="7"  width="12" height="2" rx="1" fill="#1D9E75"/>
+          <rect x="8" y="11" width="9"  height="2" rx="1" fill="#1D9E75" opacity=".7"/>
+          <rect x="8" y="15" width="11" height="2" rx="1" fill="#1D9E75" opacity=".5"/>
+          <rect x="8" y="19" width="7"  height="2" rx="1" fill="#1D9E75" opacity=".35"/>
+        </svg>
+      </div>
+      <span class="cn">SIH-SUS</span>
+      <span class="cs">CSV · DATASUS<br>Internações SP</span>
+    </div>
+
+    <!-- PySUS -->
+    <div class="card ct">
+      <div class="ico" style="background:rgba(29,158,117,.12)">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect x="3" y="3" width="22" height="22" rx="5" stroke="#1D9E75" stroke-width="1.2" fill="rgba(29,158,117,.08)"/>
+          <text x="14" y="13" text-anchor="middle" font-size="7" font-weight="600" fill="#5DCAA5" font-family="monospace">Py</text>
+          <text x="14" y="21" text-anchor="middle" font-size="6" fill="#1D9E75" font-family="monospace">SUS</text>
+        </svg>
+      </div>
+      <span class="cn">PySUS</span>
+      <span class="cs">Biblioteca Python<br>FTP DATASUS</span>
+    </div>
+
+    <!-- IBGE -->
+    <div class="card ct">
+      <div class="ico" style="background:rgba(29,158,117,.12)">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="10" stroke="#1D9E75" stroke-width="1.2" fill="rgba(29,158,117,.08)"/>
+          <path d="M4 14 Q9 9 14 14 Q19 19 24 14" stroke="#5DCAA5" stroke-width="1.2" fill="none"/>
+          <line x1="14" y1="4"  x2="14" y2="24" stroke="#1D9E75" stroke-width=".8" stroke-dasharray="2 2" opacity=".5"/>
+          <line x1="4"  y1="14" x2="24" y2="14" stroke="#1D9E75" stroke-width=".8" stroke-dasharray="2 2" opacity=".5"/>
+        </svg>
+      </div>
+      <span class="cn">IBGE</span>
+      <span class="cs">Pop. 60+ SP<br>Natalidade · Projeções</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- SETAS 1→2 -->
+<div class="arrows">
+  <div class="aw"><svg width="12" height="26" viewBox="0 0 12 26"><line x1="6" y1="0" x2="6" y2="19" stroke="#1D9E75" stroke-width="1.2" opacity=".4"/><polyline points="2,15 6,23 10,15" fill="none" stroke="#1D9E75" stroke-width="1.2" stroke-linejoin="round" opacity=".4"/></svg></div>
+  <div class="aw"><svg width="12" height="26" viewBox="0 0 12 26"><line x1="6" y1="0" x2="6" y2="19" stroke="#1D9E75" stroke-width="1.2" opacity=".4"/><polyline points="2,15 6,23 10,15" fill="none" stroke="#1D9E75" stroke-width="1.2" stroke-linejoin="round" opacity=".4"/></svg></div>
+  <div class="aw"><svg width="12" height="26" viewBox="0 0 12 26"><line x1="6" y1="0" x2="6" y2="19" stroke="#1D9E75" stroke-width="1.2" opacity=".4"/><polyline points="2,15 6,23 10,15" fill="none" stroke="#1D9E75" stroke-width="1.2" stroke-linejoin="round" opacity=".4"/></svg></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     LAYER 2 — ETL PYTHON
+════════════════════════════════════════════ -->
+<div class="row">
+  <div class="lbl"><span>ETL</span></div>
+  <div class="cards">
+
+    <!-- Filtro F00-F03 -->
+    <div class="card cp">
+      <div class="ico" style="background:rgba(127,119,221,.1)">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M4 7 L24 7 L16 15 L16 23 L12 23 L12 15 Z" stroke="#7F77DD" stroke-width="1.2" fill="rgba(127,119,221,.1)" stroke-linejoin="round"/>
+          <text x="14" y="12" text-anchor="middle" font-size="5" fill="#AFA9EC" font-family="monospace">F00–F03</text>
+        </svg>
+      </div>
+      <span class="cn">Filtro CID F00–F03</span>
+      <span class="cs">Pandas · Demência SP<br>2010 – 2025</span>
+    </div>
+
+    <!-- Limpeza -->
+    <div class="card cp">
+      <div class="ico" style="background:rgba(127,119,221,.1)">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect x="5" y="10" width="18" height="12" rx="3" stroke="#7F77DD" stroke-width="1.2" fill="rgba(127,119,221,.1)"/>
+          <rect x="5" y="6"  width="18" height="6"  rx="2" stroke="#7F77DD" stroke-width="1.2" fill="rgba(127,119,221,.06)"/>
+          <rect x="8" y="13" width="6" height="2" rx="1" fill="#7F77DD" opacity=".6"/>
+          <rect x="16" y="13" width="4" height="2" rx="1" fill="#7F77DD" opacity=".4"/>
+          <rect x="8" y="17" width="9" height="2" rx="1" fill="#7F77DD" opacity=".3"/>
+        </svg>
+      </div>
+      <span class="cn">Limpeza e Join</span>
+      <span class="cs">Faixa etária · Sexo<br>IBGE + SIH merge</span>
+    </div>
+
+    <!-- Modelo preditivo -->
+    <div class="card cp">
+      <div class="ico" style="background:rgba(127,119,221,.1)">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <polyline points="3,24 7,19 11,17 15,12 19,8" fill="none" stroke="#7F77DD" stroke-width="1.5" stroke-linecap="round"/>
+          <polyline points="19,8 23,5" fill="none" stroke="#AFA9EC" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2.5 1.5"/>
+          <circle cx="19" cy="8" r="2.2" fill="#7F77DD" stroke="#AFA9EC" stroke-width="1"/>
+          <rect x="2" y="23" width="24" height="1" rx=".5" fill="#7F77DD" opacity=".2"/>
+        </svg>
+      </div>
+      <span class="cn">Modelo Preditivo</span>
+      <span class="cs">Scikit-learn · Regressão<br>Projeção 2026–2036</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- SETAS 2→3 -->
+<div class="arrows">
+  <div class="aw"><svg width="12" height="26" viewBox="0 0 12 26"><line x1="6" y1="0" x2="6" y2="19" stroke="#7F77DD" stroke-width="1.2" opacity=".4"/><polyline points="2,15 6,23 10,15" fill="none" stroke="#7F77DD" stroke-width="1.2" stroke-linejoin="round" opacity=".4"/></svg></div>
+  <div class="aw"><svg width="12" height="26" viewBox="0 0 12 26"><line x1="6" y1="0" x2="6" y2="19" stroke="#7F77DD" stroke-width="1.2" opacity=".4"/><polyline points="2,15 6,23 10,15" fill="none" stroke="#7F77DD" stroke-width="1.2" stroke-linejoin="round" opacity=".4"/></svg></div>
+  <div class="aw"><svg width="12" height="26" viewBox="0 0 12 26"><line x1="6" y1="0" x2="6" y2="19" stroke="#7F77DD" stroke-width="1.2" opacity=".4"/><polyline points="2,15 6,23 10,15" fill="none" stroke="#7F77DD" stroke-width="1.2" stroke-linejoin="round" opacity=".4"/></svg></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     LAYER 3 — ORACLE AUTONOMOUS DB
+════════════════════════════════════════════ -->
+<div class="row">
+  <div class="lbl"><span>Banco</span></div>
+  <div class="cards">
+
+    <!-- Oracle Autonomous -->
+    <div class="card cb" style="flex:1.8">
+      <div class="ico" style="background:rgba(55,138,221,.1);width:60px;border-radius:12px;">
+        <svg width="50" height="32" viewBox="0 0 50 32" fill="none">
+          <ellipse cx="25" cy="16" rx="22" ry="13" stroke="#C74634" stroke-width="1.2" fill="rgba(199,70,52,.06)"/>
+          <ellipse cx="25" cy="16" rx="14" ry="7" fill="none" stroke="#E8593C" stroke-width="1.1"/>
+          <text x="25" y="19.5" text-anchor="middle" font-size="6.5" font-weight="600" fill="#E8593C" font-family="sans-serif">AUTONOMOUS</text>
+        </svg>
+      </div>
+      <span class="cn">Oracle Autonomous Database</span>
+      <span class="cs">MINDLINK_INTERNACOES · MINDLINK_INDICADORES<br>MINDLINK_PROJECAO · Views estratégicas</span>
+    </div>
+
+    <!-- oracledb Python -->
+    <div class="card cb">
+      <div class="ico" style="background:rgba(55,138,221,.1)">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect x="3" y="3" width="22" height="22" rx="5" stroke="#378ADD" stroke-width="1.2" fill="rgba(55,138,221,.07)"/>
+          <text x="14" y="12" text-anchor="middle" font-size="6.5" font-weight="600" fill="#85B7EB" font-family="monospace">oracle</text>
+          <text x="14" y="20" text-anchor="middle" font-size="6" fill="#378ADD" font-family="monospace">db · Python</text>
+        </svg>
+      </div>
+      <span class="cn">oracledb</span>
+      <span class="cs">Driver Python<br>Ingestão em lote</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- SETAS 3→4 -->
+<div class="arrows">
+  <div class="aw" style="flex:1.8"><svg width="12" height="26" viewBox="0 0 12 26"><line x1="6" y1="0" x2="6" y2="19" stroke="#378ADD" stroke-width="1.2" opacity=".4"/><polyline points="2,15 6,23 10,15" fill="none" stroke="#378ADD" stroke-width="1.2" stroke-linejoin="round" opacity=".4"/></svg></div>
+  <div class="aw"><svg width="12" height="26" viewBox="0 0 12 26"><line x1="6" y1="0" x2="6" y2="19" stroke="#378ADD" stroke-width="1.2" opacity=".4"/><polyline points="2,15 6,23 10,15" fill="none" stroke="#378ADD" stroke-width="1.2" stroke-linejoin="round" opacity=".4"/></svg></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     LAYER 4 — ORACLE ANALYTICS + SELECT AI
+════════════════════════════════════════════ -->
+<div class="row">
+  <div class="lbl"><span>Analytics</span></div>
+  <div class="cards">
+
+    <!-- Oracle Analytics Cloud -->
+    <div class="card co" style="flex:1.5">
+      <div class="ico" style="background:rgba(199,70,52,.1);width:52px;border-radius:12px;">
+        <svg width="42" height="32" viewBox="0 0 42 32" fill="none">
+          <rect x="3"  y="21" width="5" height="9"  rx="1.5" fill="#C74634" opacity=".7"/>
+          <rect x="11" y="15" width="5" height="15" rx="1.5" fill="#C74634" opacity=".85"/>
+          <rect x="19" y="9"  width="5" height="21" rx="1.5" fill="#C74634"/>
+          <rect x="27" y="4"  width="5" height="26" rx="1.5" fill="#E8593C" opacity=".5" stroke="#F5C518" stroke-width=".8"/>
+          <polyline points="5.5,20 13.5,14 21.5,8 29.5,3" fill="none" stroke="#F5C518" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="29.5" cy="3" r="2" fill="#F5C518"/>
+        </svg>
+      </div>
+      <span class="cn">Oracle Analytics Cloud</span>
+      <span class="cs">Dashboard interativo<br>KPIs · Projeção 2036</span>
+    </div>
+
+    <!-- Select AI -->
+    <div class="card co" style="flex:1.5">
+      <div class="ico" style="background:rgba(199,70,52,.1);width:52px;border-radius:12px;">
+        <svg width="42" height="32" viewBox="0 0 42 32" fill="none">
+          <rect x="2" y="4" width="26" height="18" rx="4" stroke="#C74634" stroke-width="1.2" fill="rgba(199,70,52,.07)"/>
+          <rect x="2" y="14" width="26" height="10" rx="0 0 4 4" fill="rgba(199,70,52,.04)"/>
+          <text x="15" y="12" text-anchor="middle" font-size="7" font-weight="600" fill="#E8593C" font-family="monospace">SELECT AI</text>
+          <rect x="6"  y="17" width="10" height="1.5" rx=".75" fill="#E8593C" opacity=".4"/>
+          <rect x="6"  y="20" width="7"  height="1.5" rx=".75" fill="#E8593C" opacity=".3"/>
+          <rect x="31" y="8" width="9" height="16" rx="4" fill="rgba(0,48,135,.5)" stroke="#378ADD" stroke-width=".8"/>
+          <text x="35.5" y="19" text-anchor="middle" font-size="8" font-weight="700" fill="#F5C518" font-family="sans-serif">AI</text>
+        </svg>
+      </div>
+      <span class="cn">Select AI</span>
+      <span class="cs">Perguntas em PT-BR<br>NL → SQL automático</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- SETAS 4→5 -->
+<div class="arrows">
+  <div class="aw" style="flex:1.5"><svg width="12" height="26" viewBox="0 0 12 26"><line x1="6" y1="0" x2="6" y2="19" stroke="#C74634" stroke-width="1.2" opacity=".4"/><polyline points="2,15 6,23 10,15" fill="none" stroke="#C74634" stroke-width="1.2" stroke-linejoin="round" opacity=".4"/></svg></div>
+  <div class="aw" style="flex:1.5"><svg width="12" height="26" viewBox="0 0 12 26"><line x1="6" y1="0" x2="6" y2="19" stroke="#C74634" stroke-width="1.2" opacity=".4"/><polyline points="2,15 6,23 10,15" fill="none" stroke="#C74634" stroke-width="1.2" stroke-linejoin="round" opacity=".4"/></svg></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     LAYER 5 — ENTREGA FINAL
+════════════════════════════════════════════ -->
+<div class="row">
+  <div class="lbl"><span>Entrega</span></div>
+  <div class="cards">
+
+    <!-- Dashboard KPIs -->
+    <div class="card cg">
+      <div class="ico" style="background:rgba(90,122,144,.1)">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect x="2" y="2" width="11" height="11" rx="3" fill="#1D9E75" opacity=".5" stroke="#1D9E75" stroke-width=".8"/>
+          <rect x="15" y="2" width="11" height="6"  rx="3" fill="#5DCAA5" opacity=".4" stroke="#5DCAA5" stroke-width=".8"/>
+          <rect x="2"  y="15" width="24" height="11" rx="3" fill="#085041" opacity=".4" stroke="#1D9E75" stroke-width=".8"/>
+          <rect x="5"  y="18" width="4" height="5" rx="1" fill="#1D9E75"/>
+          <rect x="11" y="16" width="4" height="7" rx="1" fill="#5DCAA5"/>
+          <rect x="17" y="14" width="4" height="9" rx="1" fill="#9FE1CB"/>
+        </svg>
+      </div>
+      <span class="cn">Dashboard OAC</span>
+      <span class="cs">KPIs demência SP<br>CID F00–F03</span>
+    </div>
+
+    <!-- Painel preditivo -->
+    <div class="card cg">
+      <div class="ico" style="background:rgba(90,122,144,.1)">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect x="2" y="2" width="24" height="24" rx="4" stroke="rgba(255,255,255,.06)" stroke-width="1" fill="none"/>
+          <rect x="4"  y="21" width="4" height="4" rx="1" fill="#BA7517" opacity=".7"/>
+          <rect x="10" y="17" width="4" height="8" rx="1" fill="#EF9F27" opacity=".8"/>
+          <rect x="16" y="12" width="4" height="13" rx="1" fill="#EF9F27"/>
+          <rect x="22" y="8"  width="4" height="17" rx="1" fill="#FAC775" opacity=".5" stroke="#F5C518" stroke-width=".7" stroke-dasharray="2 1"/>
+          <polyline points="6,20 12,16 18,11 24,7" fill="none" stroke="#F5C518" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="24" cy="7" r="1.8" fill="#F5C518"/>
+        </svg>
+      </div>
+      <span class="cn">Painel Preditivo</span>
+      <span class="cs">Custo + internações<br>projetados até 2036</span>
+    </div>
+
+    <!-- Select AI gestor -->
+    <div class="card cg">
+      <div class="ico" style="background:rgba(90,122,144,.1)">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect x="3"  y="5" width="20" height="14" rx="4" stroke="#378ADD" stroke-width="1.1" fill="rgba(55,138,221,.07)"/>
+          <polygon points="8,19 11,24 15,19" fill="rgba(55,138,221,.07)" stroke="#378ADD" stroke-width="1.1"/>
+          <rect x="7"  y="10" width="12" height="1.5" rx=".75" fill="#85B7EB"/>
+          <rect x="7"  y="14" width="8"  height="1.5" rx=".75" fill="#378ADD" opacity=".6"/>
+          <rect x="21" y="5" width="7" height="10" rx="3" fill="rgba(0,48,135,.6)" stroke="#378ADD" stroke-width=".8"/>
+          <text x="24.5" y="13" text-anchor="middle" font-size="6" font-weight="700" fill="#F5C518" font-family="sans-serif">AI</text>
+        </svg>
+      </div>
+      <span class="cn">Consulta NL</span>
+      <span class="cs">Gestor pergunta<br>em português</span>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /arch -->
+
+<!-- FOOTER -->
+<div class="ft">
+  <div class="ft-l">MindLink · She Leads · RM 572886 · 570351 · 572387 · 569873 · 568651</div>
+  <div class="legend">
+    <div class="leg"><div class="dot" style="background:#1D9E75"></div>Fontes</div>
+    <div class="leg"><div class="dot" style="background:#7F77DD"></div>ETL Python</div>
+    <div class="leg"><div class="dot" style="background:#378ADD"></div>Oracle DB</div>
+    <div class="leg"><div class="dot" style="background:#C74634"></div>Analytics</div>
+    <div class="leg"><div class="dot" style="background:#5a7a90"></div>Entrega</div>
+  </div>
+</div>
+
+</div><!-- /page -->
+</body>
+</html>

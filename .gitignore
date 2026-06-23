@@ -1,0 +1,31 @@
+# ── Credenciais e segredos ──
+.env
+wallet/
+Wallet_mindlink/
+Wallet*/
+*.pem
+*.sso
+*.p12
+*.jks
+
+# ── Ambiente virtual ──
+venv_mindlink/
+venv/
+.venv/
+
+# ── Dados (pesados / regeneráveis pelo pipeline) ──
+data/raw/
+data/processed/
+
+# ── Python ──
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# ── Editor / SO ──
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.claude/

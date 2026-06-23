@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindLink — Painel Analítico-Preditivo de Demência</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ===== MindLink — Manual de Marca 2026 =====
+     Indigo Trust #1E3A5F · Teal Clinical #0E7C7B · Coral Calm #E07856
+     Graphite #2D3142 · Cream #F5F2EC · Títulos Montserrat · Texto Inter */
+  :root{
+    --indigo:#1E3A5F;--teal:#0E7C7B;--coral:#E07856;--graphite:#2D3142;
+    --cream:#F5F2EC;--surface:#FFFFFF;--line:#E3DDD2;
+    --text:#2D3142;--muted:#6B6F7D;--faint:#9A9AA6;
+    --teal-soft:#E1EFEE;--coral-soft:#F8E7DE;--indigo-soft:#E6EBF1;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--cream);color:var(--text);font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;padding:34px 26px 64px}
+  .wrap{max-width:1200px;margin:0 auto}
+
+  /* Cabeçalho / assinatura */
+  header{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;
+    border-bottom:2px solid var(--indigo);padding-bottom:20px;margin-bottom:26px}
+  .brand{display:flex;align-items:center;gap:14px}
+  .mark{width:46px;height:46px;border-radius:13px;flex:none;
+    background:linear-gradient(140deg,var(--teal),var(--indigo));display:grid;place-items:center}
+  .mark svg{width:26px;height:26px}
+  .name{font-family:'Montserrat';font-weight:600;font-size:13px;letter-spacing:1.4px;
+    color:var(--indigo);text-transform:uppercase}
+  .name span{color:var(--teal)}
+  h1{font-family:'Montserrat';font-weight:600;font-size:23px;margin:2px 0 0;color:var(--indigo);
+    letter-spacing:-.3px;line-height:1.18}
+  .sub{color:var(--muted);font-size:12.5px;margin-top:4px;max-width:62ch}
+  .tag{font-family:'Montserrat';font-size:10.5px;color:var(--coral);font-weight:600;
+    text-transform:uppercase;letter-spacing:1px;text-align:right;line-height:1.5}
+
+  /* KPIs */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+  .kpi{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 19px;
+    position:relative;overflow:hidden}
+  .kpi::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent,var(--teal))}
+  .kpi .lab{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+  .kpi .val{font-family:'Montserrat';font-weight:600;font-size:27px;margin:8px 0 3px;color:var(--indigo);
+    letter-spacing:-.8px;font-variant-numeric:tabular-nums}
+  .kpi .ctx{font-size:11.5px;color:var(--faint)}
+  .kpi .up{color:var(--coral)}
+
+  /* Painéis */
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin-bottom:14px}
+  .eyebrow{font-family:'Montserrat';font-size:10.5px;font-weight:600;letter-spacing:.8px;
+    text-transform:uppercase;color:var(--coral)}
+  .ptitle{font-family:'Montserrat';font-weight:600;font-size:17px;color:var(--indigo);margin:4px 0 5px}
+  .pdesc{color:var(--muted);font-size:12.5px;margin:0 0 16px;line-height:1.55;max-width:74ch}
+  .chart-h{position:relative;height:330px}.chart-m{position:relative;height:250px}
+  .row2{display:grid;grid-template-columns:1.15fr 1fr;gap:14px;margin-bottom:14px}
+
+  /* Território */
+  .terr{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .tc{border:1px solid var(--line);border-radius:13px;padding:14px}
+  .tc .uf{font-family:'Montserrat';font-weight:600;font-size:14px;color:var(--indigo)}
+  .tc .nm{font-size:11px;color:var(--muted);margin-bottom:9px}
+  .tc .gr{font-family:'Montserrat';font-weight:600;font-size:18px;float:right;color:var(--coral);
+    font-variant-numeric:tabular-nums}
+  .bar{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:8px}
+  .bar>div{height:100%;border-radius:99px}
+  .sc{font-size:10.5px;color:var(--faint);margin-top:6px}
+  .badge{font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:99px;text-transform:uppercase;letter-spacing:.4px}
+
+  /* Select AI */
+  .ai{background:linear-gradient(140deg,var(--indigo),#142838);border:none}
+  .ai .eyebrow{color:#74C9C8}
+  .ai .ptitle{color:#fff}
+  .ai .pdesc{color:#B3C0D2}
+  .askrow{display:flex;gap:10px;flex-wrap:wrap}
+  .askrow textarea{flex:1;min-width:240px;min-height:48px;resize:vertical;border-radius:12px;
+    border:1px solid #2B3A52;background:#11253A;color:#fff;padding:13px 15px;font-family:'Inter';font-size:14px}
+  .askrow textarea::placeholder{color:#7F8CA3}
+  .askrow textarea:focus{outline:none;border-color:var(--teal)}
+  .askrow button{background:var(--coral);color:#fff;border:none;border-radius:12px;padding:0 24px;font-weight:600;
+    font-family:'Montserrat';font-size:14px;cursor:pointer;min-height:48px;transition:background .18s ease}
+  .askrow button:hover:not(:disabled){background:#CF6A48}
+  .askrow button:disabled{opacity:.6;cursor:default}
+  .resp{margin-top:15px;background:#11253A;border:1px solid #2B3A52;border-radius:12px;padding:15px 17px;
+    white-space:pre-wrap;line-height:1.6;font-size:14px;color:#E6EDF7;min-height:20px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+  .chip{font-size:12px;color:#B3C0D2;border:1px solid #2B3A52;border-radius:99px;padding:6px 13px;
+    cursor:pointer;transition:all .18s ease}
+  .chip:hover{border-color:var(--coral);color:#fff}
+  .loading{color:var(--faint);font-size:13px}
+  .errbox{background:var(--coral-soft);border:1px solid var(--coral);color:#A44A2C;border-radius:14px;
+    padding:14px 16px;margin-bottom:14px;font-size:13px}
+
+  @media(max-width:880px){.kpis{grid-template-columns:repeat(2,1fr)}.row2{grid-template-columns:1fr}.terr{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8">
+          <circle cx="6" cy="7" r="2"/><circle cx="18" cy="6" r="2"/>
+          <circle cx="17" cy="17" r="2"/><circle cx="7" cy="17" r="2"/>
+          <circle cx="12" cy="12" r="2.4" fill="#fff" stroke="none"/>
+          <path d="M7.7 8.2 10.4 11M16.3 7.4 13.4 10.6M16 15.4 13.6 13.2M8.8 15.6 11 13.4"/>
+        </svg>
+      </div>
+      <div>
+        <div class="name">Mind<span>Link</span></div>
+        <h1>Painel Analítico-Preditivo de Demência</h1>
+        <div class="sub">CID-10 F00–F03 + G30 · base SP-município → projeção nacional · dados ao vivo do Oracle</div>
+      </div>
+    </div>
+    <div class="tag">Challenge Oracle + FIAP 2026<br>Equipe She Leads</div>
+  </header>
+
+  <section class="kpis" id="kpis">
+    <div class="kpi" style="--accent:var(--teal)"><div class="lab">Internações 2050</div><div class="val" id="k-int">…</div><div class="ctx">AIH/ano (Brasil)</div></div>
+    <div class="kpi" style="--accent:var(--coral)"><div class="lab">Crescimento 2020→2050</div><div class="val up" id="k-growth">…</div><div class="ctx">envelhecimento</div></div>
+    <div class="kpi" style="--accent:var(--indigo)"><div class="lab">População 60+ 2050</div><div class="val" id="k-pop">…</div><div class="ctx">milhões · IBGE</div></div>
+    <div class="kpi" style="--accent:var(--teal)"><div class="lab">Taxa observada</div><div class="val">24,25</div><div class="ctx">AIH/100 mil 60+ (SP-mun.)</div></div>
+  </section>
+
+  <!-- SELECT AI -->
+  <section class="panel ai">
+    <div class="eyebrow">Select AI · Oracle + Gemini</div>
+    <div class="ptitle">Pergunte em português</div>
+    <p class="pdesc">O gestor escreve a pergunta; o Oracle Select AI traduz para SQL, consulta os dados e responde.</p>
+    <div class="askrow">
+      <textarea id="pergunta" placeholder="Ex.: Quais UFs têm maior risco de internação por demência?"></textarea>
+      <button id="btnAsk" onclick="perguntar()">Perguntar</button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="resp" id="resposta">A resposta aparece aqui.</div>
+  </section>
+
+  <!-- HERO -->
+  <section class="panel">
+    <div class="eyebrow">A dor do mercado</div>
+    <div class="ptitle">Brasil envelhece → SUS interna mais por demência</div>
+    <p class="pdesc">População 60+ (barras) versus internações projetadas (linha), 2020–2050.</p>
+    <div class="chart-h"><canvas id="hero"></canvas></div>
+  </section>
+
+  <div class="row2">
+    <div class="panel" style="margin-bottom:0">
+      <div class="eyebrow">Onde a MindLink entra</div>
+      <div class="ptitle">Ranking territorial de risco</div>
+      <div class="terr" id="terr"></div>
+    </div>
+    <div class="panel" style="margin-bottom:0">
+      <div class="eyebrow">O universo oculto</div>
+      <div class="ptitle">Demência como diagnóstico secundário</div>
+      <div class="chart-m"><canvas id="como"></canvas></div>
+    </div>
+  </div>
+
+  <section class="panel">
+    <div class="eyebrow">Custo ao SUS</div>
+    <div class="ptitle">Cenários SIGTAP até 2050</div>
+    <div class="chart-m"><canvas id="custo"></canvas></div>
+  </section>
+</div>
+
+<script>
+const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+const fmt = n => Number(n).toLocaleString('pt-BR');
+Chart.defaults.font.family='Inter';
+Chart.defaults.color=css('--muted');
+
+const SUGESTOES = [
+  'Quais UFs têm maior score de risco para demência?',
+  'Qual a projeção de internações em 2050 comparada a 2020?',
+  'Quando a demência é secundária, quais condições mais aparecem?',
+];
+
+// ── Carrega dados reais do backend ───────────────────────────────────────────
+async function carregar(){
+  const chips=document.getElementById('chips');
+  chips.innerHTML = SUGESTOES.map(s=>`<span class="chip" onclick="usar(this)">${s}</span>`).join('');
+  try{
+    const r = await fetch('/api/data'); const d = await r.json();
+    if(d.erro){ throw new Error(d.erro); }
+    render(d);
+  }catch(e){
+    document.getElementById('kpis').insertAdjacentHTML('afterend',
+      `<div class="errbox">Erro ao ler o Oracle: ${e.message}. Confira o .env e o wallet.</div>`);
+  }
+}
+
+function render(d){
+  const proj = d.projecao;
+  const anos = proj.map(p=>p.ano);
+  const pop  = proj.map(p=>p.pop_60_mais_milhoes);
+  const inte = proj.map(p=>p.internacoes_proj);
+  const custoA = proj.map(p=>+(p.custo_a_congelado/1e6).toFixed(1));
+  const custoC = proj.map(p=>+(p.custo_c_pleno/1e6).toFixed(1));
+
+  // KPIs
+  const last=inte[inte.length-1], first=inte[0];
+  document.getElementById('k-int').textContent = fmt(last);
+  document.getElementById('k-growth').textContent = '+'+Math.round((last/first-1)*100)+'%';
+  document.getElementById('k-pop').textContent = String(pop[pop.length-1]).replace('.',',');
+
+  // Hero
+  new Chart(document.getElementById('hero'),{
+    data:{labels:anos,datasets:[
+      {type:'bar',label:'População 60+ (mi)',data:pop,yAxisID:'y',backgroundColor:css('--teal'),borderRadius:5,barPercentage:.55,order:2},
+      {type:'line',label:'Internações (AIH/ano)',data:inte,yAxisID:'y1',borderColor:css('--coral'),borderWidth:3,pointRadius:3,tension:.35,order:1},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false}},
+      scales:{y:{position:'left',grid:{color:css('--line')},title:{display:true,text:'População 60+ (mi)'},beginAtZero:true},
+              y1:{position:'right',grid:{display:false},title:{display:true,text:'AIH/ano'},beginAtZero:true,ticks:{callback:v=>fmt(v)}},
+              x:{grid:{display:false}}}}
+  });
+
+  // Comorbidades
+  new Chart(document.getElementById('como'),{
+    type:'bar',
+    data:{labels:d.comorbidades.map(c=>c.cid_secundario+' · '+c.descricao),
+      datasets:[{data:d.comorbidades.map(c=>c.internacoes),backgroundColor:css('--teal'),borderRadius:5,barPercentage:.7}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:css('--line')},beginAtZero:true},y:{grid:{display:false},ticks:{font:{size:11}}}}}
+  });
+
+  // Custo
+  new Chart(document.getElementById('custo'),{
+    type:'line',
+    data:{labels:anos,datasets:[
+      {label:'C · reajuste pleno',data:custoC,borderColor:css('--coral'),backgroundColor:'rgba(224,120,86,.12)',borderWidth:2.5,tension:.35,pointRadius:2,fill:true},
+      {label:'A · congelada',data:custoA,borderColor:css('--indigo'),borderDash:[6,5],borderWidth:2.5,tension:.35,pointRadius:2,fill:false},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:14,font:{size:11}}}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:css('--line')},beginAtZero:true,ticks:{callback:v=>'R$'+v+'mi'}}}}
+  });
+
+  // Território
+  const cor=n=>n==='Crítico'?css('--coral'):(n&&(n.startsWith('Alto')||n==='Médio-Alto'))?css('--teal'):css('--indigo');
+  const bg =n=>n==='Crítico'?css('--coral-soft'):(n&&(n.startsWith('Alto')||n==='Médio-Alto'))?css('--teal-soft'):css('--indigo-soft');
+  document.getElementById('terr').innerHTML = d.territorio.map(t=>`
+    <div class="tc"><span class="gr">+${t.crescimento_pct}%</span>
+      <div class="uf">${t.uf}</div><div class="nm">${t.nome}</div>
+      <span class="badge" style="color:${cor(t.nivel)};background:${bg(t.nivel)}">${t.nivel}</span>
+      <div class="bar"><div style="width:${Math.min(100,t.score)}%;background:${cor(t.nivel)}"></div></div>
+      <div class="sc">score ${t.score}</div>
+    </div>`).join('');
+}
+
+// ── Seleciona uma sugestão ───────────────────────────────────────────────────
+function usar(el){ document.getElementById('pergunta').value = el.textContent; }
+
+// ── Select AI ────────────────────────────────────────────────────────────────
+async function perguntar(){
+  const q = document.getElementById('pergunta').value.trim();
+  if(!q) return;
+  const btn = document.getElementById('btnAsk');
+  const out = document.getElementById('resposta');
+  btn.disabled=true;
+  out.innerHTML='<span class="loading">Consultando o Select AI…</span>';
+  try{
+    const r = await fetch('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},
+                                      body:JSON.stringify({pergunta:q})});
+    const d = await r.json();
+    out.textContent = d.resposta || ('Erro: '+(d.erro||'sem resposta'));
+  }catch(e){ out.textContent='Erro de conexão: '+e.message; }
+  finally{ btn.disabled=false; }
+}
+
+carregar();
+</script>
+</body>
+</html>

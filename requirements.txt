@@ -1,0 +1,11 @@
+# MindLink — dependências do pipeline
+# Instale com:  pip install -r requirements.txt
+
+pysus>=2.0        # coleta SIH-SUS (API nova, função pysus.sih)
+pandas            # manipulação de dados
+numpy             # cálculo numérico (modelo)
+pyarrow           # leitura/escrita de Parquet
+scikit-learn      # regressão polinomial (modelo preditivo)
+oracledb          # conexão Oracle (modo thin, sem Oracle Client)
+python-dotenv     # carrega credenciais do .env
+flask             # backend do dashboard + Select AI (app.py)
