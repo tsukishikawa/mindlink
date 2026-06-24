@@ -1,6 +1,6 @@
 # 🧠 MindLink — Painel Analítico-Preditivo de Demência no SUS
 
-**Challenge Oracle + FIAP 2026 · Equipe She Leads**
+**Challenge Oracle + FIAP 2026 · Equipe She Leads - Fase 03**
 
 Plataforma de inteligência preditiva que antecipa a pressão das internações por
 demência no SUS, traduzindo dados abertos do DATASUS em sinais de risco para o
