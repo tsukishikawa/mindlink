@@ -1,19 +1,17 @@
-# 🧠 MindLink — Painel Analítico-Preditivo de Demência no SUS
+# MindLink — Painel Analítico-Preditivo de Demência no SUS
 
 **Challenge Oracle + FIAP 2026 · Equipe She Leads - Fase 03**
 
 Plataforma de inteligência preditiva que antecipa a pressão das internações por
 demência no SUS, traduzindo dados abertos do DATASUS em sinais de risco para o
-gestor público — **antes** da sobrecarga acontecer.
+gestor público, **antes** da sobrecarga acontecer.
 
 > A demência é um risco previsível. O SUS precisa enxergar antes de saturar.
 
----
-
-## 🎯 O problema
+## O problema
 
 O Brasil envelhece em ritmo acelerado: a população 60+ salta de **29,9 milhões
-(2020) para 64,5 milhões (2050)** — e as internações por demência acompanham essa
+(2020) para 64,5 milhões (2050)**  e as internações por demência acompanham essa
 curva (+116% no período). O SUS, hoje, enxerga isso só no retrovisor: relatórios
 descritivos do que **já** saturou. A MindLink projeta **onde vai saturar**, com
 uma janela de manobra orçamentária real.
