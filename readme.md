@@ -1,4 +1,4 @@
-# MindLink — Painel Analítico-Preditivo de Demência no SUS
+# MindLink — Painel Analítico-Preditivo de Demência no SUS em SP
 
 **Challenge Oracle + FIAP 2026 · Equipe She Leads · Sprint 3**
 
