@@ -1,0 +1,4 @@
+-r requirements.txt
+
+# A DAG final usa a API pública do Airflow 3.
+apache-airflow>=3,<4
