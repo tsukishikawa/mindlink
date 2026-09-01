@@ -1,0 +1,4 @@
+-r requirements.txt
+
+# Dependência opcional para coleta real no SIH/SUS.
+pysus>=2

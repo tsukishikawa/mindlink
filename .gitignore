@@ -12,20 +12,28 @@ Wallet*/
 venv_mindlink/
 venv/
 .venv/
+.test-venv/
 
 # ── Dados (pesados / regeneráveis pelo pipeline) ──
 data/raw/
 data/processed/
+data/evidence/
+data/reference/*.csv
+!data/reference/.gitkeep
 
 # ── Python ──
 __pycache__/
 *.pyc
 *.pyo
 .ipynb_checkpoints/
+.pytest_cache/
+.coverage
+htmlcov/
 
 # ── Editor / SO ──
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
+desktop.ini
 .claude/

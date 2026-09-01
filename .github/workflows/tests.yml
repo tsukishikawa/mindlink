@@ -1,0 +1,21 @@
+name: Testes do pacote técnico
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  demo-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Instalar dependências
+        run: pip install -r requirements-dev.txt
+      - name: Verificar sintaxe
+        run: python -m py_compile src/mindlink_etl_sprint3_oracle.py
+      - name: Executar testes sem Oracle
+        run: pytest -q

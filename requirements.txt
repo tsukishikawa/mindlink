@@ -1,11 +1,7 @@
-# MindLink — dependências do pipeline
-# Instale com:  pip install -r requirements.txt
+# Núcleo necessário para executar o ETL em modo demonstrativo.
+numpy>=1.26,<3
+pandas>=2.1,<3
+pyarrow>=14,<21
 
-pysus>=2.0        # coleta SIH-SUS (API nova, função pysus.sih)
-pandas            # manipulação de dados
-numpy             # cálculo numérico (modelo)
-pyarrow           # leitura/escrita de Parquet
-scikit-learn      # regressão polinomial (modelo preditivo)
-oracledb          # conexão Oracle (modo thin, sem Oracle Client)
-python-dotenv     # carrega credenciais do .env
-flask             # backend do dashboard + Select AI (app.py)
+# A conexão só é usada com --oracle-load ou --oracle-validate.
+oracledb>=2,<4
