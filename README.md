@@ -12,7 +12,23 @@
 **Dados públicos para enxergar pressão hospitalar antes que ela vire crise**
 https://mindlink.app.br/
 
-[Visão geral](#visão-geral) · [Arquitetura](#arquitetura-lambda) · [Execução](#execução-local) · [Oracle](#oracle) · [Documentação](#documentação) · [Equipe](#equipe-she-leads)
+[Pitch](#pitch-da-mindlink) · [Visão geral](#visão-geral) · [Arquitetura](#arquitetura-lambda) · [Execução](#execução-local) · [Oracle](#oracle) · [Documentação](#documentação) · [Equipe](#equipe-she-leads)
+
+</div>
+
+---
+
+## Pitch da MindLink
+
+<div align="center">
+
+<a href="https://www.youtube.com/watch?v=ayBXoxzibj8&t=3s" title="Assistir ao pitch da MindLink no YouTube">
+  <img src="https://img.youtube.com/vi/ayBXoxzibj8/maxresdefault.jpg" alt="Pitch da MindLink — clique para assistir" width="800">
+</a>
+
+<br>
+
+[▶ **Assista ao nosso pitch no YouTube**](https://www.youtube.com/watch?v=ayBXoxzibj8&t=3s)
 
 </div>
 
